@@ -1,14 +1,20 @@
-
 // src/app/page.tsx
 "use client";
 
-import { TrushnaAssistant, type Message, type Reminder } from "@/components/TrushnaAssistant";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useEffect } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import { type Message, type Reminder } from "@/components/TrushnaAssistant";
+
+// Dynamically import TrushnaAssistant to prevent SSR issues with browser-specific APIs
+const TrushnaAssistant = dynamic(
+  () => import("@/components/TrushnaAssistant").then(mod => mod.TrushnaAssistant),
+  { ssr: false, loading: () => <div>Loading assistant...</div> }
+);
 
 export default function Home() {
   const { isMounted: isThemeMounted, theme } = useTheme();
