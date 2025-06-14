@@ -21,7 +21,7 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
   const [supported, setSupported] = useState(false);
   const [isAwake, setIsAwake] = useState(false); // True if wake word detected
 
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any | null>(null);
   const wakeWordTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const commandTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -43,7 +43,7 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
     };
   }, []);
 
-  const handleResult = useCallback((event: SpeechRecognitionEvent) => {
+  const handleResult = useCallback((event: any) => {
     let finalTranscript = '';
     let interimTranscript = '';
 
@@ -96,7 +96,7 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
 
   }, [options, isAwake, isListening]);
 
-  const handleError = useCallback((event: SpeechRecognitionErrorEvent) => {
+  const handleError = useCallback((event: any) => {
     let errorMessage = event.error;
     if (event.error === 'no-speech') {
       // This can happen frequently with continuous listening, might not be a "hard" error
@@ -147,7 +147,7 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
         // For now, this example relies on manual start primarily for commands.
       }
     } catch (e: any) {
-      handleError(e as SpeechRecognitionErrorEvent); // It might not be SpeechRecognitionErrorEvent
+      handleError(e as any);
     }
   }, [supported, handleResult, handleError, isListening, options, isAwake]);
 
