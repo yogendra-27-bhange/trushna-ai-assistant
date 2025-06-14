@@ -4,6 +4,9 @@ declare global {
     webkitSpeechRecognition: typeof SpeechRecognition;
   }
 
+  declare var SpeechRecognition: { new(): SpeechRecognition; prototype: SpeechRecognition; };
+  declare var SpeechRecognitionEvent: { new(type: string, eventInitDict: SpeechRecognitionEventInit): SpeechRecognitionEvent; prototype: SpeechRecognitionEvent; };
+
   interface SpeechRecognition extends EventTarget {
     continuous: boolean;
     grammars: SpeechGrammarList;
