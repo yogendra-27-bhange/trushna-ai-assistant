@@ -1,4 +1,3 @@
-
 // src/components/TrushnaAssistant.tsx
 "use client";
 
@@ -265,45 +264,25 @@ export function TrushnaAssistant({
     stopListening: stopMicListening,
     isAwake, // Get isAwake state from the hook
   } = useSpeechRecognition({
-    wakeWord: "hey trushna",
     onWakeWord: () => {
-      toast({ title: "Trushna Activated!", description: "Listening for your command...", duration: 3000 });
-      setInputValue(''); // Clear any wake word from input
+      toast({ title: "Microphone Active", description: "Listening for your command...", duration: 3000 });
+      setInputValue(''); 
     },
     onCommand: (command) => {
-      // processAndRespond will be called with the command (excluding wake word)
       if (command) {
-        // No need to setInputValue(command) here as processAndRespond clears it.
         processAndRespond(command);
       }
-      // stopListening(); // stopListening is often called internally by the hook upon command finalization
     },
     onResult: (interimOrFinalTranscript) => {
-        // Update input field with live transcript if not in "awake" command mode
-        // or if we want to show command being typed after wake word
         if (isMicListening) {
-             if (isAwake && interimOrFinalTranscript) {
-                setInputValue(interimOrFinalTranscript); // Show command as it's being spoken
-             } else if (!isAwake && interimOrFinalTranscript.toLowerCase().includes("hey trushna")) {
-                // Don't show "hey trushna" itself in the input
-             } else if (!isAwake) {
-                setInputValue(interimOrFinalTranscript);
-             }
+             setInputValue(interimOrFinalTranscript); // Always show transcript when listening
         }
     },
     onError: (err) => {
       toast({ title: "Microphone Error", description: err, variant: "destructive" });
-      // stopListening(); // ensure it stops
+      setInputValue(''); // Clear input on stop
     },
   });
-
-  // This effect is slightly redundant if onResult handles it, but can be a fallback.
-  // useEffect(() => {
-  //   if (isMicListening && transcript && !isAwake) { // Only update input if not in "command after wake word" mode
-  //     setInputValue(transcript);
-  //   }
-  // }, [transcript, isMicListening, isAwake]);
-
 
   const handleSubmit = (e?: FormEvent) => {
     e?.preventDefault();
@@ -318,16 +297,10 @@ export function TrushnaAssistant({
     }
     if (isMicListening) {
       stopMicListening();
-       // If something was transcribed before stopping, process it (unless it was just the wake word phase)
-      if (inputValue.trim() && !isAwake) { // or if inputValue is not just the wake word
-        processAndRespond(inputValue.trim());
-      } else if (isAwake && inputValue.trim()) { // If command was being typed after wake word
-        processAndRespond(inputValue.trim());
-      }
       setInputValue(''); // Clear input on stop
     } else {
       setInputValue(''); // Clear input before starting
-      startMicListening();
+      startMicListening(); // Changed from listenForCommand() to startMicListening()
     }
   };
 
@@ -361,7 +334,7 @@ export function TrushnaAssistant({
 
   const getPlaceholderText = () => {
     if (isMicListening) {
-      return isAwake ? "Say your command..." : "Listening for 'Hey Trushna'...";
+      return "Say your command...";
     }
     return "Ask Trushna anything...";
   };
