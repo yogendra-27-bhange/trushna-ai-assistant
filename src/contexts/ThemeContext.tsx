@@ -15,8 +15,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [storedTheme, setStoredTheme] = useLocalStorage<Theme>("trushna-theme", "cyberpunk");
-  const [currentTheme, setCurrentTheme] = useState<Theme>("cyberpunk"); // Default for SSR, will be updated
+  const [storedTheme, setStoredTheme] = useLocalStorage<Theme>("trushna-theme", "light");
+  const [currentTheme, setCurrentTheme] = useState<Theme>("light"); // Default for SSR, will be updated
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
