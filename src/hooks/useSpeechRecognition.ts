@@ -110,6 +110,8 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
       errorMessage = "Audio capture failed. Check microphone permissions.";
     } else if (event.error === 'not-allowed') {
       errorMessage = "Microphone access denied. Please enable it in your browser settings.";
+    } else if (event.error === 'network') {
+      errorMessage = "Network error with speech recognition. Please check your internet connection or try again later.";
     }
     setError(errorMessage);
     options?.onError?.(errorMessage);
@@ -132,7 +134,7 @@ export function useSpeechRecognition(options?: SpeechRecognitionOptions) {
         if (options?.wakeWord && !isAwake && isListening) {
             // This means it stopped, maybe due to timeout or silence. Restart for wake word.
             // Be careful with infinite loops if permissions are an issue.
-            // recognitionRef.current?.start(); 
+            recognitionRef.current?.start(); // UNCOMMENTED: Auto-restart for wake word
         } else if (!isAwake) { // If it wasn't for wake word and wasn't processing command
              setIsListening(false);
         }
